@@ -50,3 +50,10 @@ wrapper; passing those tests does not mean this bare package supplies them itsel
 Clog committed the standalone implementation as `fb57b3c`. Every imported library
 file matches that commit. The disposable integration and HTTP suites also passed
 with Clog's updated manifests and viewer. Development continues on the same branch.
+
+## Upstream scope
+
+[elephentity#90](https://github.com/hsimah-services/elephentity/issues/90) tracks
+standalone PHP, generic GraphQL generation and nginx/FPM reference wiring.
+Clog's HTTP checks use PHP's development server; native Pi deployment, FPM load
+testing and ARM memory measurements remain separate acceptance work.
