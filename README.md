@@ -22,8 +22,9 @@ with an appropriate runtime and storage adapter.
 
 ## Status and validation
 
-This is a prototype imported from Clog's uncommitted `feature/standalone-sqlite`
-work. [Provenance](docs/clog-source.json) identifies the actual source by file hashes.
+This prototype follows Clog's `feature/standalone-sqlite` work.
+[Provenance](docs/clog-source.json) identifies the source by file hashes, now verified
+against Clog commit `fb57b3c`.
 The inherited source license is preserved in [CLOG-LICENSE](CLOG-LICENSE).
 
 Clog's integration and HTTP suites pass with this package and the extracted SQLite

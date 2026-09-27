@@ -3,7 +3,7 @@
   "branch": "feature/standalone-sqlite",
   "head": "3c8d7b1b3dd502e7c8c524c56c8c0ee62348392d",
   "capturedAt": "2026-09-27T04:19:27.393260+00:00",
-  "status": "Uncommitted working tree prototype; hashes identify the actual imported files.",
+  "status": "Imported from the working tree; all imported source hashes now verified against verifiedSourceCommit.",
   "path": "server/standalone/vendor/elephentity/graphql",
   "files": {
     "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
@@ -22,5 +22,7 @@
     "src/Relay/GlobalId.php": "c4b06f3cdc1928b353bbcb643356140e3bdc3a78c605d1bf292aa5a06e50e69c",
     "src/Resolver/Connections.php": "94f7fa34372dff6af3617cff02d89b57b4031290c8856d8dd55fd80b322f6957",
     "src/SchemaBuilder.php": "e38728709b40e9a35d2d88a40ee396756f020538fc31f9480f3715ad4f438f7f"
-  }
+  },
+  "verifiedSourceCommit": "fb57b3c5fd54d2faa6759f7fc7a75e828c8c837a",
+  "verifiedAt": "2026-09-27T04:24:57.286878+00:00"
 }

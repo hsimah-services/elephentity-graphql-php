@@ -44,3 +44,9 @@ Clog's standalone integration and HTTP suites passed with the two extracted pack
 They exercise pagination, Node identity, mutation client IDs, wrong-entity root IDs,
 read/write authorization, sessions and CSRF. Some guarantees are supplied by Clog's
 wrapper; passing those tests does not mean this bare package supplies them itself.
+
+## Source commit verified
+
+Clog committed the standalone implementation as `fb57b3c`. Every imported library
+file matches that commit. The disposable integration and HTTP suites also passed
+with Clog's updated manifests and viewer. Development continues on the same branch.
