@@ -10,7 +10,7 @@ spl_autoload_register(static function (string $class): void {
     }
 }, prepend: true);
 
-use Eleph\GraphQL\Manifest\{Manifest, ObjectTypeEntry, FieldEntry, GraphQLType, ConnectionEntry, MutationEntry, RootFieldEntry};
+use Eleph\GraphQL\Manifest\{Manifest, ObjectTypeEntry, FieldEntry, GraphQLType, ConnectionEntry, MutationEntry, RootFieldEntry, QueryFieldEntry};
 use Eleph\GraphQL\Registration\{MutationRegistrar, TypeRegistrar};
 use Eleph\GraphQL\Relay\GlobalId;
 use Eleph\GraphQL\Resolver\Connections;
@@ -47,9 +47,10 @@ final class TestQuery implements EntityQuery {
 final class TestGateway implements EntityGateway {
     public array $calls = [];
     public array $input = [];
+    public ?object $queryResult = null;
     public function find(string $entity, EntityId $id): ?object { $this->calls[] = [$entity, (string) $id]; return null; }
     public function all(string $entity): EntityQuery { return new TestQuery(); }
-    public function runQuery(string $entity, string $query, array $args): EntityQuery { return new TestQuery(); }
+    public function runQuery(string $entity, string $query, array $args): ?object { return $this->queryResult; }
     public function create(string $entity, array $input): MutationResult { $this->calls[] = [$entity]; $this->input = $input; return new MutationResult(EntityId::of(1), null); }
     public function update(string $entity, EntityId $id, array $input): MutationResult { $this->calls[] = [$entity, (string) $id]; $this->input = $input; return new MutationResult($id, null); }
     public function runAction(string $entity, string $action, EntityId $id, array $args): MutationResult { return $this->update($entity, $id, $args); }
@@ -105,3 +106,22 @@ $schema->assertValid();
 check($schema->getMutationType() === null, 'Read-only schema has a mutation root.');
 check(GraphQL::executeQuery($schema, '{ hello }')->toArray() === ['data' => ['hello' => 'hello']], 'Read-only query failed.');
 echo "PASS: typed IDs, relationship inputs, pagination boundaries and read-only schema\n";
+
+$singularManifest = new Manifest(objects: ['ApiBook' => new ObjectTypeEntry('ApiBook', 'Book', ['title' => new FieldEntry('title', new GraphQLType('String'), 'getTitle')])], queries: [
+    'bookBySlug' => new QueryFieldEntry('bookBySlug', 'ApiBook', false, 'Book', 'bySlug'),
+    'searchBooks' => new QueryFieldEntry('searchBooks', 'ApiBook', true, 'Book', 'search'),
+]);
+$gateway = new TestGateway();
+$configs = (new TypeRegistrar($singularManifest, $gateway))->rootFieldConfigs();
+$resolve = $configs[0]['field']['resolve'];
+foreach ([(object) ['title' => 'Visible'], null, null] as $result) {
+    $gateway->queryResult = $result;
+    check($resolve(null, []) === $result, 'Singular query must preserve the entity or null.');
+}
+$connection = (new TypeRegistrar($singularManifest, $gateway))->connectionConfigs()[0]['resolve'];
+$gateway->queryResult = new TestQuery([(object) ['title' => 'Visible']]);
+check(count($connection(null, ['first' => 1])['nodes']) === 1, 'Collection query must still resolve a page.');
+$gateway->queryResult = (object) [];
+try { $connection(null, []); throw new LogicException('Scalar collection result accepted.'); }
+catch (RuntimeException $e) { check(str_contains($e->getMessage(), 'must return EntityQuery'), 'Collection contract failure missing.'); }
+echo "PASS: singular entity/null query results and collection result contract\n";
