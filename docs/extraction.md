@@ -17,15 +17,12 @@ the generic package yet.
 
 1. Provide generic Node and PageInfo registration from the manifest and runtime.
    Remove Clog-specific class-name and type-name assumptions from the proposed API.
-2. Make type-aware ID validation reusable for root fields, nodes, relationship inputs
-   and mutations. The imported `GlobalId::entityId()` unwraps IDs without verifying
-   the requested entity type; Clog performs additional validation in its wrapper.
-3. Centralize connection validation, including malformed cursors, first limits and
-   explicit rejection of unsupported backward pagination. Clog's root wrappers
-   currently enforce these rules; the generic connection resolver still clamps first
-   and ignores last/before. Apply validation to nested connections as well.
-4. Allow query-only schemas. `SchemaBuilder::build()` currently always includes
-   RootMutation, even when no mutation fields have been registered.
+2. Node resolution still needs generic assembly. Root fields, mutations and
+   relationship inputs now validate global-ID types in this package.
+3. Malformed cursor validation remains to be improved. The generic resolver now
+   rejects unsupported backward pagination and negative sizes, caps positive sizes,
+   and returns an empty page for first:0 on root and nested connections.
+4. Query-only schemas are supported: an empty RootMutation is omitted.
 5. Define standalone manifest generation beside the PHP target. Clog currently uses
    a manually adapted manifest. A generic GraphQL builder must emit this namespace
    without depending on the WPGraphQL runtime or requiring WordPress configuration.

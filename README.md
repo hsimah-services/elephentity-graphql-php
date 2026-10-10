@@ -44,3 +44,17 @@ packages to validate the published artifacts. See
 
 See [extraction notes](docs/extraction.md) for behavior still implemented in Clog
 and the work required before a general release.
+
+## Package regression checks
+
+After installing Composer dependencies, run `composer test` with PHP 8.3 or later.
+The regression script can also use an existing dependency autoloader:
+
+```sh
+php tests/regressions.php /path/to/vendor/autoload.php
+```
+
+Global IDs are checked against the expected public GraphQL type on root lookups,
+mutations and relationship inputs. Raw row IDs remain accepted. Connections support
+`first` and `after`; `last` and `before` are rejected explicitly. `first: 0` returns
+an empty page and negative sizes are rejected. Query-only schemas omit the mutation root.
