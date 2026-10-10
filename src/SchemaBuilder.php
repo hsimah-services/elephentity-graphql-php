@@ -79,6 +79,9 @@ final class SchemaBuilder
     }
     public function build(): Schema
     {
-        return new Schema(['query' => $this->type('RootQuery'), 'mutation' => $this->type('RootMutation'), 'types' => fn () => array_map($this->type(...), array_keys($this->configs))]);
+        $names = array_keys($this->configs);
+        $mutation = $this->configs['RootMutation']['fields'] === [] ? null : $this->type('RootMutation');
+        if ($mutation === null) $names = array_values(array_diff($names, ['RootMutation']));
+        return new Schema(['query' => $this->type('RootQuery'), 'mutation' => $mutation, 'types' => fn () => array_map($this->type(...), $names)]);
     }
 }

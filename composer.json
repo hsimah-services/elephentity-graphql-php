@@ -12,5 +12,8 @@
         "psr-4": {
             "Eleph\\GraphQL\\": "src/"
         }
+    },
+    "scripts": {
+        "test": "@php tests/regressions.php"
     }
 }
